@@ -1,8 +1,8 @@
 #include "Recuit.h"
 
 #define T_INIT 6666666
-#define T_STEP 0.999
-#define T_STOP 0.00001
+#define T_STEP 0.9
+#define T_STOP 0.00000001
 
 bool find(std::vector<int> vect, int f)
 {
@@ -64,11 +64,12 @@ Recuit::Recuit(int n, int m)
 		} while(cont);
 		this->mat.push_back(p);
 	}
-	std::random_shuffle(this->mat.begin(), this->mat.end());
+	//std::random_shuffle(this->mat.begin(), this->mat.end());
 	for (int i = 0; i < this->n*this->m; i++)
 	{
 		PointMeta* p = &(this->mat.at(i));
 		int s = (p->getNbLink() - p->getLinks().size());
+		int c = 0;
 		for (int j = 0; j < s; j++)
 		{
 			int r = rand() % (this->m*this->n);
@@ -77,14 +78,20 @@ Recuit::Recuit(int n, int m)
 			{
 				p->addLink(r);
 				p1->addLink(i);
+                c = 0;
 			}
 			else
             {
-                std::cout << r << " " << p1->getLinks().size() << " " << p1->getNbLink() << " ";
-                if (!find(p->getLinks(), r))
-                    std::cout << "false" << std::endl;
-                else
-                    std::cout << "true" << std::endl;
+                c = c + 1;
+                if (c % 100 == 0)
+                {
+                    std::cout << r << " " << p1->getLinks().size() << " " << p1->getNbLink() << " ";
+                    if (!find(p->getLinks(), r))
+                        std::cout << "false" << std::endl;
+                    else
+                        std::cout << "true" << std::endl;
+                    Sleep(500);
+                }
 				j = j - 1;
             }
 		}
@@ -130,17 +137,47 @@ void Recuit::swap(int i, int j)
 	mat.at(j).setY(tempY);
 }
 
-void Recuit::recuit(int T)
+double Recuit::getInitialTemp(double tau0)
 {
+    int res = 0;
+    srand (time(NULL));
+    for (int i = 0; i < 100; i++)
+    {
+        int r1 = (rand()) % this->nbPieces;
+        int r2 = 0;
+        do
+        {
+            r2 = (rand()) % this->nbPieces ;
+        }
+        while (r1 == r2) ;
+        int firstcost = this->cost();
+        this->swap(r1, r2) ;
+        int secondcost = this->cost();
+        res = res + abs(firstcost-secondcost);
+    }
+    double T0 = - res / (100*log(tau0));
+    std::cout << "res = " << res << " , log = " << 100 * log(tau0) << std::endl;
+    return T0;
+}
+
+void Recuit::recuit(double tau0)
+{
+    double T = this->getInitialTemp(tau0);
+    std::cout << "T = " << T << std::endl;
     static const unsigned int nbpieces = this->nbPieces;
     unsigned int t = 0, nbiter = 0 ;
-    unsigned int cost_i, cost_j, best_cost ;
+    double cost_i, cost_j, best_cost ;
     int delta;
     unsigned int i, j;
     best_cost = this->cost();
     srand (time(NULL));
     bool cont = true;
     int accept = 0;
+    int acceptdelta = 0;
+    int palierSansAccept = 0;
+    double rnd = 0;
+    std::default_random_engine generator;
+    std::uniform_real_distribution<double> distribution(0.0,1.0);
     while (T > T_STOP && cont)
     {
         t++ ;
@@ -166,21 +203,39 @@ void Recuit::recuit(int T)
             std::cout << "Solution trouve, iteration : " << nbiter << std::endl;
         }
         delta = cost_j - cost_i;
-        if (delta <= 0)
+        if (delta < 0)
             accept++; //Accept the swap
-        else if (delta > 0)
+        else if (delta >= 0)
         {
-            if (exp(-(delta / T)) > (((rand())% 1001) / 1000.))
-                accept++; //Accept the swap
+            double x = distribution(generator);
+            double e = exp(-(delta / T));
+            rnd = rnd + e;
+            if (e > x)
+            {
+                acceptdelta++; //Accept the swap
+            }
             else
+            {
                 this->swap(j,i); //Refuse the swap, so we reput the last conﬁguration
+                std::cout << e << " " << x << std::endl;
+                Sleep(500);
+            }
         }
         //Decrease temperature
-        if (t == 100*nbpieces || accept == 12*nbpieces)
+        if (t == 100*nbpieces || (accept+acceptdelta) == 12*nbpieces)
         {
+            std::cout << "T : " << T << " , t : " << t << " , nbiter : " << nbiter << " , accept : " << accept << " , acceptdelta : " << acceptdelta << " , moyrnd : " << rnd/(t-accept) << " , best_cost : " << best_cost << std::endl;
+            if (accept+acceptdelta == 0)
+                palierSansAccept++;
+            else
+                palierSansAccept = 0;
             T *= T_STEP ;
             t = 0 ;
             accept = 0;
+            acceptdelta = 0;
+            rnd = 0;
+            if (palierSansAccept == 3)
+                cont = false;
         }
     }
     if (cont)

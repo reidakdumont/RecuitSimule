@@ -23,11 +23,12 @@ class Recuit
         Recuit(int n, int m);
 		void swap(int i, int j);
 		double cost();
-		void recuit(int T);
+		void recuit(double tau0);
 		vector<PointMeta> getMat();
         virtual ~Recuit();
     protected:
     private:
+        double getInitialTemp(double tau0);
 		int n;
 		int m;
 		vector<PointMeta> mat;
