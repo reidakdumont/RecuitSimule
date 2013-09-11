@@ -80,7 +80,7 @@ Recuit::Recuit(int n, int m)
 			}
 			else
             {
-                std::cout << p1->getLinks().size() << " " << p1->getNbLink() << " ";
+                std::cout << r << " " << p1->getLinks().size() << " " << p1->getNbLink() << " ";
                 if (!find(p->getLinks(), r))
                     std::cout << "false" << std::endl;
                 else
@@ -98,7 +98,7 @@ Recuit::~Recuit()
 
 double distance(PointMeta p1, PointMeta p2)
 {
-	return sqrt(pow(p1.getX()-p2.getX(),2)+pow(p1.getY()-p2.getY(),2));
+	return abs(p1.getX()-p2.getX())+abs(p1.getY()-p2.getY());
 }
 
 double Recuit::cost()
@@ -112,7 +112,12 @@ double Recuit::cost()
 		for (int j = 0; j < s2; j++)
 			res = res + distance(p, this->mat.at(p.getLinks().at(j)));
 	}
-	return res;
+	return res/2;
+}
+
+vector<PointMeta> Recuit::getMat()
+{
+    return this->mat;
 }
 
 void Recuit::swap(int i, int j)
@@ -135,6 +140,7 @@ void Recuit::recuit(int T)
     best_cost = this->cost();
     srand (time(NULL));
     bool cont = true;
+    int accept = 0;
     while (T > T_STOP && cont)
     {
         t++ ;
@@ -160,24 +166,25 @@ void Recuit::recuit(int T)
             std::cout << "Solution trouve, iteration : " << nbiter << std::endl;
         }
         delta = cost_j - cost_i;
-        if (delta < 0)
-            ; //Accept the swap
+        if (delta <= 0)
+            accept++; //Accept the swap
         else if (delta > 0)
         {
             if (exp(-(delta / T)) > (((rand())% 1001) / 1000.))
-                ; //Accept the swap
+                accept++; //Accept the swap
             else
                 this->swap(j,i); //Refuse the swap, so we reput the last conﬁguration
         }
         //Decrease temperature
-        if ((t % nbpieces) == 0)
+        if (t == 100*nbpieces || accept == 12*nbpieces)
         {
             T *= T_STEP ;
             t = 0 ;
+            accept = 0;
         }
     }
     if (cont)
-        std::cout << "true" << std::endl;
+        std::cout << best_cost << " true" << std::endl;
     else
-        std::cout << "false" << std::endl;
+        std::cout << best_cost << "false" << std::endl;
 }

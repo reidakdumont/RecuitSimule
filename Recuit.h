@@ -24,6 +24,7 @@ class Recuit
 		void swap(int i, int j);
 		double cost();
 		void recuit(int T);
+		vector<PointMeta> getMat();
         virtual ~Recuit();
     protected:
     private:
