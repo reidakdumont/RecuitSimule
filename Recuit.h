@@ -2,6 +2,7 @@
 #define RECUIT_H
 
 #include "PointMeta.h"
+#include "CImg.h"
 
 #include <string>
 #include <vector>
@@ -25,13 +26,17 @@ class Recuit
 		double cost();
 		void recuit(double tau0);
 		vector<PointMeta> getMat();
+		void setMat(vector<PointMeta> m);
+		void draw();
         virtual ~Recuit();
     protected:
     private:
         double getInitialTemp(double tau0);
+        void initializeLink();
 		int n;
 		int m;
 		vector<PointMeta> mat;
+		vector<PointMeta> sol;
 		int nbPieces;
 
 };
