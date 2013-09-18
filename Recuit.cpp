@@ -15,7 +15,7 @@ bool find(std::vector<int> vect, int f)
     return false;
 }
 
-Recuit::Recuit(int n, int m)
+/*Recuit::Recuit(int n, int m)
 {
 	this->n = n;
 	this->m = m;
@@ -71,41 +71,113 @@ Recuit::Recuit(int n, int m)
 	//std::random_shuffle(this->mat.begin(), this->mat.end());
 	this->initializeLink();
 	this->sol = this->mat;
+}*/
+
+Recuit::Recuit(int n, int m)
+{
+    this->n = n;
+	this->m = m;
+    this->nbPieces = this->n*this->m;
+    for (int i = 0; i < this->n*this->m; i++)
+	{
+		int x = i % this->m;
+		int y = (i-x) / this->n;
+		x = x*5;
+		y = y*5;
+		PointMeta p(x,y);
+		this->mat.push_back(p);
+	}
+	for (int i = 0; i < this->nbPieces; i++)
+    {
+        PointMeta* p = &(this->mat.at(i));
+        int x = p->getX();
+        int y = p->getY();
+        std::cout << "(" << x << "," << y << ") " << i << std::endl;
+        if (x != 0)
+        {
+            PointMeta* p1 = &(this->mat.at(i-1));
+            p->addLink(i-1);
+            p1->addLink(i);
+        }
+        if (y != 0)
+        {
+            PointMeta* p1 = &(this->mat.at(i-this->m));
+            p->addLink(i-this->m);
+            p1->addLink(i);
+        }
+    }
+    initializeLink();
+    this->sol = this->mat;
 }
 
-void Recuit::draw()
+void Recuit::draw(bool fin)
 {
-    CImg<unsigned char> visu(200,200,1,3,0);
-    const unsigned char white[] = {255,255,255}, red[] = {255, 0, 0};
-    CImgDisplay draw_disp(visu, "Draw prob");
-    visu.fill(0);
+    CImg<unsigned char> visu(400,400,1,3,255);
+    const unsigned char white[] = {255,255,255}, red[] = {255, 0, 0}, black[] = {0,0,0};
+    char* n;
+    if (fin)
+        n = "Draw final prob";
+    else
+        n = "Draw prob";
+    CImgDisplay draw_disp(visu, const_cast<char*>(n));
     for (int i = 0; i < this->nbPieces; i++)
     {
         PointMeta p = this->mat.at(i);
-        int x = p.getX() + 10 + 20*p.getX()/5;
-        int y = p.getY() + 10 + 20*p.getY()/5;
-        visu.draw_rectangle(x - 10, y-10, x+10, y+10, white);
+        int x = p.getX() + 30 + 60*p.getX()/5;
+        int y = p.getY() + 30 + 60*p.getY()/5;
+        visu.draw_rectangle(x - 20, y-20, x+20, y+20, black);
     }
     for (int i = 0; i  < this->nbPieces; i++)
     {
         PointMeta p = this->mat.at(i);
-        int x = p.getX() + 10 + 20*p.getX()/5;
-        int y = p.getY() + 10 + 20*p.getY()/5;
+        int x = p.getX() + 30 + 60*p.getX()/5;
+        int y = p.getY() + 30 + 60*p.getY()/5;
+        const unsigned char col1[] = {i*10, i*10, i*5};
+        const unsigned char col2[] = {i*10, i*5, i*10};
+        const unsigned char col3[] = {i*5, i*10, i*10};
         for (int j = 0; j < p.getLinks().size(); j++)
         {
             PointMeta p2 = this->mat.at(p.getLinks().at(j));
-            int x2 = p2.getX() + 10 + 20*p2.getX()/5;
-            int y2 = p2.getY() + 10 + 20*p2.getY()/5;
-            visu.draw_line(x, y, x2, y2, red);
+            /*if (fin)
+                std::cout << "(" << p.getX() << "," << p.getY() << "," << p.getNbLink() << ") , (" << p2.getX() << "," << p2.getY() << "," << p2.getNbLink() << ")" << std::endl;*/
+            int x2 = p2.getX() + 30 + 60*p2.getX()/5;
+            int y2 = p2.getY() + 30 + 60*p2.getY()/5;
+            int rd = rand() % 3;
+            if (rd == 0)
+                visu.draw_line(x, y, x2, y2, col1);
+            else if (rd == 1)
+                visu.draw_line(x, y, x2, y2, col2);
+            else
+                visu.draw_line(x, y, x2, y2, col3);
         }
     }
     visu.display(draw_disp);
     draw_disp.show();
-    while (!draw_disp.is_closed())
-        draw_disp.wait();
+    if (!fin)
+        Sleep(3000);
+    else
+        while(!draw_disp.is_closed())
+            draw_disp.wait();
 }
 
 void Recuit::initializeLink()
+{
+    std::uniform_int_distribution<int> distrib(0,this->nbPieces-1);
+    std::default_random_engine generator;
+    for (int i = 0; i < 100; i++)
+    {
+        int r1 = distrib(generator);
+        int r2 = 0;
+        do
+        {
+            r2 = distrib(generator);
+        }
+        while (r1 == r2) ;
+        this->swp(r1,r2);
+    }
+}
+
+/*void Recuit::initializeLink()
 {
     for (int i = 0; i < this->nbPieces; i++)
     {
@@ -124,9 +196,31 @@ void Recuit::initializeLink()
 			PointMeta* p1 = &(this->mat.at(r));
 			if (r != i && p1->getLinks().size() < p1->getNbLink() && !find(p->getLinks(), r) && !find(p1->getLinks(), i))
 			{
-				p->addLink(r);
-				p1->addLink(i);
-                c = 0;
+			    if ((p->getNbLink() == 2 && p1->getNbLink() == 4) || (p1->getNbLink() == 2 && p->getNbLink() == 4))
+                {
+                    c = c + 1;
+                    if (c % 100 == 0)
+                    {
+                        std::cout << r << " " << p1->getLinks().size() << " " << p1->getNbLink() << " ";
+                        if (!find(p->getLinks(), r))
+                            std::cout << "false" << std::endl;
+                        else
+                            std::cout << "true" << std::endl;
+                        Sleep(500);
+                    }
+                    if (c % 2000 == 0)
+                    {
+                        initializeLink();
+                        return;
+                    }
+                    j = j - 1;
+                }
+                else
+                {
+                    p->addLink(r);
+                    p1->addLink(i);
+                    c = 0;
+                }
 			}
 			else
             {
@@ -142,14 +236,15 @@ void Recuit::initializeLink()
                 }
                 if (c % 2000 == 0)
                 {
-                    srand (time(NULL));
+                    initializeLink();
+                    return;
                 }
 				j = j - 1;
             }
 		}
-		std::cout << "(" << i << ")" << std::endl;
+		std::cout << "(" << i << ") " << p->getLinks().size() << " " << p->getNbLink() << std::endl;
 	}
-}
+}*/
 
 Recuit::~Recuit()
 {
@@ -176,13 +271,11 @@ double Recuit::cost()
 		int s2 = p.getLinks().size();
 		for (int j = 0; j < s2; j++)
         {
-            int d = distance(p, this->mat.at(p.getLinks().at(j)));
-            //std::cout << d  << " : (" << p.getX() << "," << p.getY() << ") , (" << this->mat.at(p.getLinks().at(j)).getX() << "," << this->mat.at(p.getLinks().at(j)).getY() << ")" << std::endl;
-			res = res + d;
-			//Sleep(500);
+            int pos = p.getLinks().at(j);
+            int d = distance(p, this->mat.at(pos));
+            res = res + d;
         }
 	}
-	//std::cout << "Fin Distance" << std::endl;
 	return res/2;
 }
 
@@ -191,7 +284,7 @@ vector<PointMeta> Recuit::getMat()
     return this->mat;
 }
 
-void Recuit::swap(int i, int j)
+void Recuit::swp(int i, int j)
 {
 	int tempX = mat.at(i).getX();
 	int tempY = mat.at(i).getY();
@@ -204,18 +297,19 @@ void Recuit::swap(int i, int j)
 double Recuit::getInitialTemp(double tau0)
 {
     double res = 0;
-    srand (time(NULL));
+    std::uniform_int_distribution<int> distrib(0,this->nbPieces-1);
+    std::default_random_engine generator;
     for (int i = 0; i < 100; i++)
     {
-        int r1 = (rand()) % this->nbPieces;
+        int r1 = distrib(generator);
         int r2 = 0;
         do
         {
-            r2 = (rand()) % this->nbPieces ;
+            r2 = distrib(generator);
         }
         while (r1 == r2) ;
         double firstcost = this->cost();
-        this->swap(r1, r2) ;
+        this->swp(r1, r2) ;
         double secondcost = this->cost();
         res = res + abs(firstcost-secondcost);
     }
@@ -229,12 +323,15 @@ void Recuit::recuit(double tau0)
 {
     double best_cost = 0;
     best_cost = this->cost();
+    this->sol = this->mat;
     std::default_random_engine generator;
     std::uniform_real_distribution<double> distribution(0.0,1.0);
-    /*for (int h = 0; h < 100; h++)
-    {*/
+    std::uniform_int_distribution<int> distrib(0,this->nbPieces-1);
+    for (int h = 0; h < 10; h++)
+    {
         this->initializeLink();
-        double T = this->getInitialTemp(tau0);
+        double T0 = this->getInitialTemp(tau0);
+        double T = T0;
         std::cout << "T = " << T << std::endl;
         static const unsigned int nbpieces = this->nbPieces;
         unsigned int t = 0, nbiter = 0 ;
@@ -249,65 +346,74 @@ void Recuit::recuit(double tau0)
         double rnd = 0;
         while (T > T_STOP && cont)
         {
-            t++ ;
-            nbiter++ ;
-            //Compute inititial cost
-            cost_i = this->cost();
-            //Pick up two aleatory pieces
-            i = (rand()) % nbpieces ;
-            do
+            while (t != 100*nbpieces && (accept+acceptdelta) != 12*nbpieces && cont)
             {
-                j = (rand()) % nbpieces ;
+                t++ ;
+                nbiter++ ;
+                //Compute inititial cost
+                cost_i = this->cost();
+                //Pick up two aleatory pieces
+                i = distrib(generator);
+                do
+                {
+                    j = distrib(generator);
+                }
+                while (i == j) ;
+                this->swp(i, j);
+                //Compute new cost
+                cost_j = this->cost();
+                // Back up best solution
+                delta = cost_j - cost_i;
+                if (delta < 0)
+                {
+                    if (cost_j < best_cost)
+                    {
+                        best_cost = cost_j;
+                        this->sol = this->mat;
+                    }
+                    if (best_cost == 200)
+                    {
+                        cont = false;
+                        std::cout << "Solution trouve, iteration : " << nbiter << std::endl;
+                    }
+                    std::cout << "accept" << std::endl;
+                    accept++; //Accept the swap
+                    std::cout << delta << " " << cost_j << " " << cost_i << " " << best_cost << " T = " << T << std::endl;
+                }
+                else if (delta > 0)
+                {
+                    double p = distribution(generator);
+                    double e = exp(-delta / T);
+                    rnd = rnd + e;
+                    if (p < e)
+                    {
+                        std::cout << "accept" << std::endl;
+                        acceptdelta++; //Accept the swap
+                        std::cout << delta << " " << cost_j << " " << cost_i << " " << best_cost << " T = " << T << std::endl;
+                    }
+                    else
+                        this->swp(i,j); //Refuse the swap, so we reput the last conﬁguration
+                }
             }
-            while (i == j) ;
-            this->swap(i, j);
-            //Compute new cost
-            cost_j = this->cost();
-            // Back up best solution
-            if (cost_j < best_cost)
-            {
-                best_cost = cost_j;
-                this->sol = this->mat;
-            }
-            if (cost_j == 200)
-            {
+            std::cout << "T : " << T << " , t : " << t << " , nbiter : " << nbiter << " , accept : " << accept << " , acceptdelta : " << acceptdelta << " , moyrnd : " << rnd/(t-accept) << " , best_cost : " << best_cost << std::endl;
+            this->draw(false);
+            if (accept+acceptdelta == 0)
+                palierSansAccept++;
+            else
+                palierSansAccept = 0;
+            T *= T_STEP ;
+            t = 0 ;
+            accept = 0;
+            acceptdelta = 0;
+            rnd = 0;
+            if (palierSansAccept == 3)
                 cont = false;
-                std::cout << "Solution trouve, iteration : " << nbiter << std::endl;
-            }
-            delta = cost_j - cost_i;
-            if (delta < 0)
-                accept++; //Accept the swap
-            else if (delta > 0)
-            {
-                double x = distribution(generator);
-                double e = exp(-(delta / T));
-                rnd = rnd + e;
-                if (e > x)
-                    acceptdelta++; //Accept the swap
-                else
-                    this->swap(j,i); //Refuse the swap, so we reput the last conﬁguration
-            }
-            //Decrease temperature
-            if (t == 100*nbpieces || (accept+acceptdelta) == 12*nbpieces)
-            {
-                std::cout << "T : " << T << " , t : " << t << " , nbiter : " << nbiter << " , accept : " << accept << " , acceptdelta : " << acceptdelta << " , moyrnd : " << rnd/(t-accept) << " , best_cost : " << best_cost << std::endl;
-                if (accept+acceptdelta == 0)
-                    palierSansAccept++;
-                else
-                    palierSansAccept = 0;
-                T *= T_STEP ;
-                t = 0 ;
-                accept = 0;
-                acceptdelta = 0;
-                rnd = 0;
-                if (palierSansAccept == 3)
-                    cont = false;
-            }
         }
         if (cont)
             std::cout << best_cost << " true" << std::endl;
         else
-            std::cout << best_cost << "false" << std::endl;
-        this->draw();
-    //}
+            std::cout << best_cost << " false" << std::endl;
+    }
+    this->mat = this->sol;
+    this->draw(true);
 }

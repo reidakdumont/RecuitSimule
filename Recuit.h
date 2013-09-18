@@ -22,12 +22,12 @@ class Recuit
 {
     public:
         Recuit(int n, int m);
-		void swap(int i, int j);
+		void swp(int i, int j);
 		double cost();
 		void recuit(double tau0);
 		vector<PointMeta> getMat();
 		void setMat(vector<PointMeta> m);
-		void draw();
+		void draw(bool fin);
         virtual ~Recuit();
     protected:
     private:

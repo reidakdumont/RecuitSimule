@@ -11,10 +11,10 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="5 5 0.5" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
-					<Add option="-std=c++0x" />
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
