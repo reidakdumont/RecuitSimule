@@ -2,7 +2,7 @@
 
 #define T_INIT 6666666
 #define T_STEP 0.9
-#define T_STOP 0.00000001
+#define T_STOP 0.000001
 
 
 using namespace cimg_library;
@@ -112,7 +112,7 @@ Recuit::Recuit(int n, int m)
 
 void Recuit::draw(bool fin)
 {
-    CImg<unsigned char> visu(400,400,1,3,255);
+    CImg<unsigned char> visu(1400,1020,1,3,255);
     const unsigned char white[] = {255,255,255}, red[] = {255, 0, 0}, black[] = {0,0,0};
     char* n;
     if (fin)
@@ -153,9 +153,10 @@ void Recuit::draw(bool fin)
     }
     visu.display(draw_disp);
     draw_disp.show();
-    if (!fin)
+    /*if (!fin)
         Sleep(3000);
-    else
+    else*/
+    if (fin)
         while(!draw_disp.is_closed())
             draw_disp.wait();
 }
@@ -327,6 +328,8 @@ void Recuit::recuit(double tau0)
     std::default_random_engine generator;
     std::uniform_real_distribution<double> distribution(0.0,1.0);
     std::uniform_int_distribution<int> distrib(0,this->nbPieces-1);
+    int tempmax = (this->m-1)*5*(this->m+this->n);
+    std::cout << tempmax << std::endl;
     for (int h = 0; h < 10; h++)
     {
         this->initializeLink();
@@ -362,23 +365,23 @@ void Recuit::recuit(double tau0)
                 this->swp(i, j);
                 //Compute new cost
                 cost_j = this->cost();
+                if (cost_j < best_cost)
+                {
+                    best_cost = cost_j;
+                    this->sol = this->mat;
+                }
+                if (best_cost == tempmax)
+                {
+                    cont = false;
+                    std::cout << "Solution trouve, iteration : " << nbiter << std::endl;
+                }
                 // Back up best solution
                 delta = cost_j - cost_i;
                 if (delta < 0)
                 {
-                    if (cost_j < best_cost)
-                    {
-                        best_cost = cost_j;
-                        this->sol = this->mat;
-                    }
-                    if (best_cost == 200)
-                    {
-                        cont = false;
-                        std::cout << "Solution trouve, iteration : " << nbiter << std::endl;
-                    }
-                    std::cout << "accept" << std::endl;
+                    //std::cout << "accept" << std::endl;
                     accept++; //Accept the swap
-                    std::cout << delta << " " << cost_j << " " << cost_i << " " << best_cost << " T = " << T << std::endl;
+                    //std::cout << delta << " " << cost_j << " " << cost_i << " " << best_cost << " T = " << T << std::endl;
                 }
                 else if (delta > 0)
                 {
@@ -387,16 +390,16 @@ void Recuit::recuit(double tau0)
                     rnd = rnd + e;
                     if (p < e)
                     {
-                        std::cout << "accept" << std::endl;
+                        //std::cout << "accept" << std::endl;
                         acceptdelta++; //Accept the swap
-                        std::cout << delta << " " << cost_j << " " << cost_i << " " << best_cost << " T = " << T << std::endl;
+                        //std::cout << delta << " " << cost_j << " " << cost_i << " " << best_cost << " T = " << T << std::endl;
                     }
                     else
                         this->swp(i,j); //Refuse the swap, so we reput the last conﬁguration
                 }
             }
             std::cout << "T : " << T << " , t : " << t << " , nbiter : " << nbiter << " , accept : " << accept << " , acceptdelta : " << acceptdelta << " , moyrnd : " << rnd/(t-accept) << " , best_cost : " << best_cost << std::endl;
-            this->draw(false);
+            //this->draw(false);
             if (accept+acceptdelta == 0)
                 palierSansAccept++;
             else
