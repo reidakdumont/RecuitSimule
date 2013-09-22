@@ -69,16 +69,14 @@
 \begin{minipage}{0.4\textwidth}
 	\begin{flushleft} \large
 		\emph{Auteurs:}\\
-			Victor \textsc{Degliame} \\
-			Tanguy \textsc{Abel} \\
 			Thibault \textsc{Lapassade} \\
-			Florian \textsc{Thomassin} \\
+			Fabrice \textsc{Rougeau} \\
 	\end{flushleft}
 \end{minipage}
 \begin{minipage}{0.4\textwidth}
 	\begin{flushright} \large
 		\emph{Relecture:} \\
-              Reda \textsc{Dehak}
+              Patrick \textsc{Siarry}
 	\end{flushright}
 \end{minipage}
 \end{titlepage}
@@ -119,7 +117,7 @@ propos de ce rapport. Nous allons, toutefois, récapituler très brièvement, le
 traits caractéristiques du recuit simulé.
 
 Cette méthode est inspirée de la physique. L’idée vient du fait que la nature parvient à passer d’un état désordonné à un état ordonné, d’énergie globale minimum.
-Le forgeron travaille en utilisant des palliers de température. La méthode utilise une
+Le forgeron travaille en utilisant des paliers de température. La méthode utilise une
 règle d’acceptation qui est souvent la règle de Métropolis.
 
 L'idée est de partir d'un état quelconque en fixant une température T assez élevée. On perturbe cet état par une légère transformation, ce qui entraîne une variation $\Delta{E}$ du système. Si $\Delta{E} \leq 0$, on accepte le nouvel état (qui est meilleur), sinon on l'accepte avec une probabilité $\exp^{\frac{-\Delta E}{T}}$. Ce procédé permet de ne pas rester pris dans un minimum local, puisque en effet, on peut accepter des configurations dégradantes dans certaines conditions. Si l'équilibre thermodynamique est atteint, on baisse la température suivant un coefficient que l'on choisit nous même (dans notre cas, T= 0.9*T). On remarque donc que plus l'algorithme évolue, plus la température baisse et donc moins on aura tendance à accepter de configurations dégradantes. Ceci permettra de tendre vers une stabilisation dans un optimum global.
@@ -162,23 +160,23 @@ Voyons comment cela se traduit concrètement, en pratique, sur notre problème.
 
 \section{Réalisation}
 \subsection{Choix techniques}
-Nous avons choisi d'implémenter l'algorithme en C++, notamment dans un souci de performance d'execution. On cherche en effet à obtenir la meilleure solution possible dans un délai de temps le plus court possible. Pour le rendu graphique des solutions, nous utilisons la librairie CImg de l'INRIA.
+Nous avons choisi d'implémenter l'algorithme en C++, notamment dans un souci de performance d’exécution. On cherche en effet à obtenir la meilleure solution possible dans un délai de temps le plus court possible. Pour le rendu graphique des solutions, nous utilisons la librairie CImg de l'INRIA.
 
 \subsection{Implémentation}
-Nous avons choisi de mettre le code de la routine principale en annexe. Nous allons brièvement aborder ici quelques points de l'algorithmes qui peuvent poser problèmes.
+Nous avons choisi de mettre le code de la routine principale en annexe. Nous allons brièvement aborder ici quelques points de l’algorithme qui peuvent poser problèmes.
 
-Il nous a fallu dévelloper une fonction pour calculer le coût d'une solution, puisque l'on cherche à minimiser ce coût qui représente la fonction objectif, et une fonction qui échange 2 pièces, puisque c'est cette transformation qui a été choisit.
+Il nous a fallu développer une fonction pour calculer le coût d'une solution, puisque l'on cherche à minimiser ce coût qui représente la fonction objectif, et une fonction qui échange 2 pièces, puisque c'est cette transformation qui a été choisit.
 
-Une fois que l'on a ces deux fonctions, on se fixe un $\tau 0$, on tire une configuration initiale aléatoirement et on applique l'algorithme. On abaisse la température toute les 300 acceptations ou les 2500 tours dans la boucle. Pour ce qui est de la règle d'acceptation de Métropolis, nous utilisons une des fonctions fournit par la STL qui en l'occurence permet de générer des nombres aléatoires de manière uniforme.
+Une fois que l'on a ces deux fonctions, on se fixe un $\tau 0$, on tire une configuration initiale aléatoirement et on applique l'algorithme. On abaisse la température toute les 300 acceptations ou les 2500 tours dans la boucle. Pour ce qui est de la règle d'acceptation de Métropolis, nous utilisons une des fonctions fournit par la STL qui en l’occurrence permet de générer des nombres aléatoires de manière uniforme.
 
 Comme nous voulions soigner l'aspect visualisation du déroulement de l'algorithme, nous avons développer une routine d'affichage et il est ainsi possible de lancer l'algorithme et de la voir évoluer peu à peu jusqu'au bout.
 
 \subsection{Résultats}
-Les résultats obtenus sont très satisfaisants. L'algorithme trouve dans la pluspart des cas la meilleure solution de 200 et dans le cas où il ne la trouve tout de suite, en relançant l'algorithme avec une autre configuration il y arrive très souvent. Il tombe d'ailleurs sur cette solution de nombreuses fois au cours de l'exécution. Il est plaisant de partir d'un état désordonné et de voir peu à peu le système tendre vers l'organisation optimale comme l'illustre ces captures d'écrans de notre programme:
+Les résultats obtenus sont très satisfaisants. L'algorithme trouve dans la plupart des cas la meilleure solution de 200 et dans le cas où il ne la trouve tout de suite, en relançant l'algorithme avec une autre configuration il y arrive très souvent. Il tombe d'ailleurs sur cette solution de nombreuses fois au cours de l'exécution. Il est plaisant de partir d'un état désordonné et de voir peu à peu le système tendre vers l'organisation optimale comme l'illustre ces captures d'écrans de notre programme:
 %Mettre les captures d'écrans
 
 \section{Discussion sur le choix des paramètres}
-La résolution d'un tel problème de référence, puisque l'on connait à l'avance la solution, nous permet de mettre au point et de régler la méthode d'optimisation elle-même : cela permet d'étudier la sensibilité du recuit simulé par rapport au réglage de ses principaux paramètres.
+La résolution d'un tel problème de référence, puisque l'on connaît à l'avance la solution, nous permet de mettre au point et de régler la méthode d'optimisation elle-même : cela permet d'étudier la sensibilité du recuit simulé par rapport au réglage de ses principaux paramètres.
 
 Il convient d'abord d'identifier les différents paramètres du recuit simulé, à savoir :
 - le $\tau 0$
@@ -193,8 +191,8 @@ En ce qui concerne la condition d'arrêt, nous stoppons l'algorithme lorsque la 
 Les paramètres que nous avons choisis, nous permettent ainsi de trouver quasiment à coup sûr la solution du problème. Nous pourrions assouplir les paramètres choisis afin de faire moins d'itérations mais en pratique l'algorithme fonctionne très vite et de façon satisfaisante.
 
 \chapter{Conclusion générale}
-Nous avons implémenté avec succès deux métaheuristiques pour l'optimisation difficile ) savoir le recuit simulé et les essaims particulaires pour répondre à un problème discret. Les deux méthodes se sont montrés très efficaces. Nous avons aussi pu réaliser l'importance des paramètres dans ces méthodes et la difficulté pratique de trouver les meilleurs paramètres selon les variations des problèmes qui se posent. On pourrait sans doute proposer des « metametaheuristiques » qui seraient capables d’utiliser une métaheuristique et de trouver
-les meilleurs paramètres de cette métaheurisitque selon le problème posé. Pourquoi
+Nous avons implémenté avec succès deux métaheuristiques pour l'optimisation difficile ) savoir le recuit simulé et les essaims particulaires pour répondre à un problème discret. Les deux méthodes se sont montrés très efficaces. Nous avons aussi pu réaliser l'importance des paramètres dans ces méthodes et la difficulté pratique de trouver les meilleurs paramètres selon les variations des problèmes qui se posent. On pourrait sans doute proposer des "metametaheuristiques" qui seraient capables d’utiliser une métaheuristique et de trouver
+les meilleurs paramètres de cette métaheuristique selon le problème posé. Pourquoi
 ne pas imaginer par exemple une application utilisant un essaim particulaire dont les
 meilleurs paramètres pour une fonction donnée seraient trouvés par recuit simulé ?
 \end{document}
