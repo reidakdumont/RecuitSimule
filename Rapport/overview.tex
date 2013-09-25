@@ -14,6 +14,7 @@
 \usepackage[francais]{minitoc}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{graphicx}
 %\usepackage[unicode,hidelinks]{hyperref}
 \setcounter{minitocdepth}{1}
 % mise en page %
@@ -172,8 +173,40 @@ Une fois que l'on a ces deux fonctions, on se fixe un $\tau 0$, on tire une conf
 Comme nous voulions soigner l'aspect visualisation du déroulement de l'algorithme, nous avons développer une routine d'affichage et il est ainsi possible de lancer l'algorithme et de la voir évoluer peu à peu jusqu'au bout.
 
 \subsection{Résultats}
-Les résultats obtenus sont très satisfaisants. L'algorithme trouve dans la plupart des cas la meilleure solution de 200 et dans le cas où il ne la trouve tout de suite, en relançant l'algorithme avec une autre configuration il y arrive très souvent. Il tombe d'ailleurs sur cette solution de nombreuses fois au cours de l'exécution. Il est plaisant de partir d'un état désordonné et de voir peu à peu le système tendre vers l'organisation optimale comme l'illustre ces captures d'écrans de notre programme:
+Les résultats obtenus sont très satisfaisants. L'algorithme trouve dans la plupart des cas la meilleure solution de 200 et dans le cas où il ne la trouve tout de suite, en relançant l'algorithme avec une autre configuration il y arrive très souvent. Il tombe d'ailleurs sur cette solution de nombreuses fois au cours de l'exécution. Il est plaisant de partir d'un état désordonné et de voir peu à peu le système tendre vers l'organisation optimale comme l'illustre ces captures d'écrans de notre programme:\\
+
 %Mettre les captures d'écrans
+\fbox{\begin{minipage}{0.9\textwidth}
+\includegraphics[scale=0.05]{image/state_000000.jpg}\\
+\begin{center}
+\textsc{Configuration de départ}\\
+\end{center}
+\end{minipage}}\\
+
+
+\fbox{\begin{minipage}{0.9\textwidth}
+\includegraphics[scale=0.05]{image/state_000004.jpg}\\
+\begin{center}
+\textsc{Configuration avancée}\\
+\end{center}
+\end{minipage}}\\
+
+
+\fbox{\begin{minipage}{0.9\textwidth}
+\includegraphics[scale=0.05]{image/state_000008.jpg}\\
+\begin{center}
+\textsc{Configuration plus avancée}\\
+\end{center}
+\end{minipage}}\\
+
+
+\fbox{\begin{minipage}{0.9\textwidth}
+\includegraphics[scale=0.05]{image/state_000013.jpg}\\
+\begin{center}
+\textsc{Configuration de final}\\
+\end{center}
+\end{minipage}}\\
+
 
 \section{Discussion sur le choix des paramètres}
 La résolution d'un tel problème de référence, puisque l'on connaît à l'avance la solution, nous permet de mettre au point et de régler la méthode d'optimisation elle-même : cela permet d'étudier la sensibilité du recuit simulé par rapport au réglage de ses principaux paramètres.

@@ -13,6 +13,8 @@
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include <windows.h>
 
@@ -21,23 +23,25 @@ using namespace std;
 class Recuit
 {
     public:
+        Recuit();
         Recuit(int n, int m);
 		void swp(int i, int j);
 		double cost();
-		void recuit(double tau0);
+		void recuit(double tau0, double (*f1) (), void (*f2) (int,int));
 		vector<PointMeta> getMat();
 		void setMat(vector<PointMeta> m);
-		void draw(bool fin);
+		void draw(bool fin, int cost, double temp);
         virtual ~Recuit();
     protected:
     private:
-        double getInitialTemp(double tau0);
+        double getInitialTemp(double tau0, double (*f1) (), void (*f2) (int, int));
         void initializeLink();
 		int n;
 		int m;
 		vector<PointMeta> mat;
 		vector<PointMeta> sol;
 		int nbPieces;
+		int countimg;
 
 };
 
