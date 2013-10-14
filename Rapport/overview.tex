@@ -223,6 +223,93 @@ En ce qui concerne la condition d'arrêt, nous stoppons l'algorithme lorsque la 
 
 Les paramètres que nous avons choisis, nous permettent ainsi de trouver quasiment à coup sûr la solution du problème. Nous pourrions assouplir les paramètres choisis afin de faire moins d'itérations mais en pratique l'algorithme fonctionne très vite et de façon satisfaisante.
 
+\newpage
+
+\chapter{Cas discret avec la recherche tabou}
+\minitoc
+\section{Rappel du sujet}
+
+Nous allons tout d’abord rappelé le sujet de l’exercice à résoudre, en ce qui concerne
+le cas discret avec la recherche tabou.
+
+Il s’agissait de résoudre un problème de placement de composants électroniques
+en des sites prédéterminés. Il faut placer 25 blocs. Le seul mouvement autorisé est
+la permutation de deux blocs. La fonction objectif, qu’il convient de minimiser, est
+évaluée en sommant les longueurs en L (dites aussi « longueurs de Manhattan ») des
+connexions. La distance entre deux blocs est égale à 5. Nous savons que pour les
+configurations optimales, la fonction objectif est égale à 200, ce qui nous permettra
+d’évaluer l’efficacité de notre méthode. Notons que les composants voisins sont définis dès le départ. Ainsi le composant numéro 8 doit être relié avec les composants
+numéro 13, 3, 7 et 9. Les captures d’écran de notre application sont, à ce sujet, sans
+doute plus claires qu’un long discours ; le lecteur perdu est donc invité à s’y référer.
+
+Nous avons choisi d’implémenter la méthode de la recherche tabou qui semblait bien
+adaptée pour résoudre ce problème.
+
+\section{La recherche Tabou}
+Nous n’allons pas détailler les différentes techniques rattachées à  cette méthode, car ce n’est pas le
+propos de ce rapport. Nous allons, toutefois, récapituler très brièvement, les grands
+traits caractéristiques de la recherche tabou.
+
+La recherche tabou est une métaheuristique d'optimisation présentée par Fred Glover en 1986.
+L'idée de la recherche tabou consiste, à partir d'une position donnée, à regarder les positions dans le voisinage et à choisir la position dans ce voisinage qui minimise la fonction objectif.
+On peut noter que cette opération peut augmenter la valeur d'une fonction à minimiser : Si par exemple tous les points du voisinage ont une valeur plus élevée. C'est à partir de ce mécanisme que l'on sort d'un minimum local.
+
+Le risque cependant est qu'à l'étape suivante, on retombe dans le minimum local auquel on vient d'échapper. C'est pourquoi il faut que l'heuristique ait de la mémoire : le mécanisme consiste à interdire de revenir sur les dernières positions explorées.C'est de là que vient le terme tabou.
+
+Les positions déjà explorées sont conservées dans une file FIFO appelée  liste tabou  que l'on ajuste au besoin de l'heuristique. Cette file doit conserver des beaucoup de positions, ce qui peut  nécessiter la mise en mémoire d'une grande quantité d'informations. Cette difficulté peut être contournée gardant en mémoire que les mouvements précédents, associés à la valeur de la fonction à minimiser.
+
+La méthode utilise une ou plusieurs mémoires  qui sont mises à jour
+et exploitées au cours de la recherche.
+Algorithme tabou de base : mémoire à court terme (liste taboue)
+Algorithme tabou évolué : mémoire à court terme (liste tabou) et une mémoire à
+long terme pour assurer l’intensification et/ou la diversification
+
+L'idée de base de l'intensification vient qu on pourrait tenter d'approfondir (ou intensifier) des solutions qui semblaient prometteuses.
+
+La diversification est pour eviter le problème de confinage. On fait en sorte de re diversifier les solutions pour explorer de nouveaux secteurs.
+
+Voyons comment cela se traduit concrètement, en pratique, sur notre problème.
+
+\section{Réalisation}
+\subsection{Choix techniques}
+Nous avons choisi d'implémenter l'algorithme en C++, notamment dans un souci de performance d’exécution. On cherche en effet à obtenir la meilleure solution possible dans un délai de temps le plus court possible. 
+
+\subsection{Implémentation}
+ Nous allons brièvement aborder ici quelques points de l’algorithme qui peuvent poser problèmes.
+
+Il nous a fallu développer une fonction pour calculer le coût d'une solution, puisque l'on cherche à minimiser ce coût qui représente la fonction objectif, et une fonction qui échange 2 pièces, puisque c'est cette transformation qui a été choisit.
+
+Une fois que l'on a ces deux fonctions, on tire une configuration initiale aléatoirement et on applique l'algorithme.
+
+La méthode de recherche tabou de base ne suffisant pas il a fallu adopter une recherche tabou evolué : c'est à dire doté d'une mémoire à long terme.On a doté la mémoire à long terme d'une technique de diversification et d 'une d'intensification.
+
+On a choisi de memoriser les meilleurs solutions rencontrées au cours de la recherche (dite solutions d'élite) et on a choisi d'implementer la technique d'intensification suivante.
+Lorsqu'il y a stagnation ou à partir d'un certain nombre de cycle on repart d'une solution d'élite
+et on fixe les composants qui semblent intéressant c'est à dire faisant parti de plusieurs solutions d'élite.
+Pour la méthode de diversification on a adopté pour une méthode  de diversification par relance :
+on interrompt periodiquement la recherche et on construit une solution avec des attributs peu utilisés. 
+
+ nous utilisons une des fonctions fournit par la STL qui en l’occurrence permet de générer des nombres aléatoires de manière uniforme.
+
+\subsection{Résultats}
+Les résultats obtenus sont satisfaisants. L'algorithme trouve dans la plupart des cas la meilleur solution. Mais Il a tendance a beaucoup changer de position avant de trouver la solution.
+
+
+\section{Discussion sur le choix des paramètres}
+La résolution d'un tel problème de référence dont on connaît à l'avance la solution, nous permet de mettre au point et de régler la méthode d'optimisation elle-même : cela permet d'étudier l'importance des principaux paramètres de la recherche tabou.
+
+Il convient d'abord d'identifier les différents paramètres de la recherche tabou, à savoir :
+
+- la taille de la liste tabou
+- la condition d'arrêt
+-Technique de diversification : nombre d'attribut
+
+Pour la taille de la liste tabou, nous avons tester empiriquement la solution jusqu'a trouver un bon compromis pour trouver une solution satisfaisante. 
+Pour le nombre d'attribut utilisé pour la relance on a pu voir qu'empiriquement une bonne solution etait de prendre 5 attributs.
+
+Pour la condition d'arrêt, nous stoppons l'algorithme lorsque la durée de traitement est supérieur à un T = 1 heure(chose qui n'arrive jamais), que l'on a atteint la configuration optimale de 200.
+
+Les paramètres que nous avons choisis, nous permettent ainsi de trouver quasiment à coup sûr la solution du problème.
 \chapter{Conclusion générale}
 Nous avons implémenté avec succès deux métaheuristiques pour l'optimisation difficile ) savoir le recuit simulé et les essaims particulaires pour répondre à un problème discret. Les deux méthodes se sont montrés très efficaces. Nous avons aussi pu réaliser l'importance des paramètres dans ces méthodes et la difficulté pratique de trouver les meilleurs paramètres selon les variations des problèmes qui se posent. On pourrait sans doute proposer des "metametaheuristiques" qui seraient capables d’utiliser une métaheuristique et de trouver
 les meilleurs paramètres de cette métaheuristique selon le problème posé. Pourquoi
