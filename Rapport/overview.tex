@@ -270,6 +270,51 @@ La diversification est pour eviter le problème de confinage. On fait en sorte d
 
 Voyons comment cela se traduit concrètement, en pratique, sur notre problème.
 
+\begin{algorithm}
+\caption{Calcul de la configuration optimale}
+\begin{algorithmic}
+\REQUIRE listetabou
+\ENSURE configuration optimale
+\WHILE{solution different de optimal}
+\STATE Deplacement(listetabou)
+\STATE Memorisation dans la liste tabou
+\STATE Memorisation dans la memoire à long terme
+\STATE Memroisation solution d'élite
+\STATE compteur1++
+\STATE compteur2++
+\STATE test : methode: d'intensification
+\STATE test : methode de diversification
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Methode d'intensification}
+\begin{algorithmic}
+\REQUIRE x
+\ENSURE 
+\IF{stagnation || cycle1 == x}
+\STATE search solution d'élite
+\STATE retour à solution d'élite
+\STATE mouvement différent de (liste bon placementdejaeffectuer)
+\ENDIF
+\STATE compteur1 = 0
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Methode de diversification par relance}
+\begin{algorithmic}
+\REQUIRE y
+\ENSURE 
+\IF{cycle2 == y}
+\STATE Search memoire à long terme(element peu utilisé)
+\STATE mouvement(element peu utilisé)
+\ENDIF
+\STATE compteur2 = 0
+\end{algorithmic}
+\end{algorithm}
+
 \section{Réalisation}
 \subsection{Choix techniques}
 Nous avons choisi d'implémenter l'algorithme en C++, notamment dans un souci de performance d’exécution. On cherche en effet à obtenir la meilleure solution possible dans un délai de temps le plus court possible. 
