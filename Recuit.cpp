@@ -85,6 +85,7 @@ void Recuit::draw(bool fin, int cost, double temp)
         visu.draw_rectangle(x - 20, y-20, x+20, y+20, black);
         std::ostringstream os;
         os << i+1;
+
         std::string res= os.str();
         visu.draw_text(x,y,res.c_str(),white,0,32);
     }
@@ -117,7 +118,7 @@ void Recuit::draw(bool fin, int cost, double temp)
     std::string ress= oss.str();
     visu.draw_text(0,maxY+50,ress.c_str(),black,0,32);
     visu.display(draw_disp);
-    visu.save("state.jpg", this->countimg);
+    visu.save("state.bmp", this->countimg);
     this->countimg = this->countimg + 1;
     draw_disp.show();
     /*if (!fin)

@@ -211,11 +211,11 @@ Les résultats obtenus sont très satisfaisants. L'algorithme trouve dans la plu
 \section{Discussion sur le choix des paramètres}
 La résolution d'un tel problème de référence, puisque l'on connaît à l'avance la solution, nous permet de mettre au point et de régler la méthode d'optimisation elle-même : cela permet d'étudier la sensibilité du recuit simulé par rapport au réglage de ses principaux paramètres.
 
-Il convient d'abord d'identifier les différents paramètres du recuit simulé, à savoir :
-- le $\tau 0$
-- la décrémentation de la température
-- le critère correspondant à l'équilibre thermodynamique
-- la condition d'arrêt
+Il convient d'abord d'identifier les différents paramètres du recuit simulé, à savoir :\\
+- le $\tau 0$\\
+- la décrémentation de la température\\
+- le critère correspondant à l'équilibre thermodynamique\\
+- la condition d'arrêt\\
 
 En ce qui concerne la température, nous utilisons le $\tau 0$ pour dire ce que nous pensons de la solution initiale. Nous avons décidé de prendre un $\tau 0$ égale à 0.5 pour accepter environ une dégradation sur 2. Pour ce qui concerne la décrémentation de la température, nous multiplions la température par 0.9 en rapport avec ce que nous avons vu dans le cours et des résultats que nous avons pu avoir de notre coté. Il convient que la température de départ soit assez élevée dans la mesure où ainsi, on acceptera plus de dégradation en début et qu'on aura donc moins de chance de tomber dans un minimum local. Dans la même optique, la température ne doit pas être décrémenté trop brusquement, mais tout de même suffisante pour tendre vers une stabilisation du système sur le minimum global.
 
@@ -298,11 +298,10 @@ Les résultats obtenus sont satisfaisants. L'algorithme trouve dans la plupart d
 \section{Discussion sur le choix des paramètres}
 La résolution d'un tel problème de référence dont on connaît à l'avance la solution, nous permet de mettre au point et de régler la méthode d'optimisation elle-même : cela permet d'étudier l'importance des principaux paramètres de la recherche tabou.
 
-Il convient d'abord d'identifier les différents paramètres de la recherche tabou, à savoir :
-
-- la taille de la liste tabou
-- la condition d'arrêt
--Technique de diversification : nombre d'attribut
+Il convient d'abord d'identifier les différents paramètres de la recherche tabou, à savoir :\\
+- la taille de la liste tabou\\
+- la condition d'arrêt\\
+- Technique de diversification : nombre d'attribut\\
 
 Pour la taille de la liste tabou, nous avons tester empiriquement la solution jusqu'a trouver un bon compromis pour trouver une solution satisfaisante. 
 Pour le nombre d'attribut utilisé pour la relance on a pu voir qu'empiriquement une bonne solution etait de prendre 5 attributs.
@@ -311,7 +310,7 @@ Pour la condition d'arrêt, nous stoppons l'algorithme lorsque la durée de trai
 
 Les paramètres que nous avons choisis, nous permettent ainsi de trouver quasiment à coup sûr la solution du problème.
 \chapter{Conclusion générale}
-Nous avons implémenté avec succès deux métaheuristiques pour l'optimisation difficile ) savoir le recuit simulé et les essaims particulaires pour répondre à un problème discret. Les deux méthodes se sont montrés très efficaces. Nous avons aussi pu réaliser l'importance des paramètres dans ces méthodes et la difficulté pratique de trouver les meilleurs paramètres selon les variations des problèmes qui se posent. On pourrait sans doute proposer des "metametaheuristiques" qui seraient capables d’utiliser une métaheuristique et de trouver
+Nous avons implémenté avec succès deux métaheuristiques pour l'optimisation difficile à savoir le recuit simulé et la recherche tabou pour répondre à un problème discret. Les deux méthodes se sont montrés très efficaces. Nous avons aussi pu réaliser l'importance des paramètres dans ces méthodes et la difficulté pratique de trouver les meilleurs paramètres selon les variations des problèmes qui se posent. On pourrait sans doute proposer des "metametaheuristiques" qui seraient capables d’utiliser une métaheuristique et de trouver
 les meilleurs paramètres de cette métaheuristique selon le problème posé. Pourquoi
 ne pas imaginer par exemple une application utilisant un essaim particulaire dont les
 meilleurs paramètres pour une fonction donnée seraient trouvés par recuit simulé ?
