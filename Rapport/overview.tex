@@ -256,7 +256,7 @@ On peut noter que cette opération peut augmenter la valeur d'une fonction à mi
 
 Le risque cependant est qu'à l'étape suivante, on retombe dans le minimum local auquel on vient d'échapper. C'est pourquoi il faut que l'heuristique ait de la mémoire : le mécanisme consiste à interdire de revenir sur les dernières positions explorées.C'est de là que vient le terme tabou.
 
-Les positions déjà explorées sont conservées dans une file FIFO appelée  liste tabou  que l'on ajuste au besoin de l'heuristique. Cette file doit conserver des beaucoup de positions, ce qui peut  nécessiter la mise en mémoire d'une grande quantité d'informations. Cette difficulté peut être contournée gardant en mémoire que les mouvements précédents, associés à la valeur de la fonction à minimiser.
+Les positions déjà explorées sont conservées dans une file FIFO appelée liste tabou que l'on ajuste au besoin de l'heuristique. Cette file doit conserver des beaucoup de positions, ce qui peut  nécessiter la mise en mémoire d'une grande quantité d'informations. Cette difficulté peut être contournée gardant en mémoire que les mouvements précédents, associés à la valeur de la fonction à minimiser.
 
 La méthode utilise une ou plusieurs mémoires  qui sont mises à jour
 et exploitées au cours de la recherche.
@@ -274,12 +274,9 @@ L’algorithme tabou évolué a en plus une mémoire à long terme. On implémen
 
 Dans la mémoire à long terme tout d’abord on mémorise en plus de tout les mouvements
 
-Les solutions d’élite qui sont les meilleurs configuration de placement trouvé, une recency memory qui mémorise le nombre d'itération consécutive pour laquelle l’attribut a été présent
+Les solutions d’élite, qui sont les meilleurs configuration de placement trouvé, une recency memory qui mémorise le nombre d'itération consécutive pour laquelle l’attribut a été présent
 
-sans intérruption et une frequency memory qui pour chaque attribut note ou:
-
--Le nombre de mouvement dans lequel a été appliqué l’attribut\\
--Le nombre total d’itération ou l’attribut a fait parti de la solution\\
+sans interruption et une frequency memory qui pour chaque attribut note soit le nombre de mouvement dans lequel a été appliqué l’attribut soit le nombre total d’itération ou l’attribut a fait parti de la solution\\
 
 L’idée de l’intensification est de creuser ( ou intensifier ) des régions qui semble intéressante
 et ce de façon périodique).
@@ -306,18 +303,13 @@ car on peux considérer que les régions explorés l’ont été suffisamment. L
 
 Méthode de recherche tabou stochastique
 
-l’idée de la recherche tabou stochastique est d’introduire de l’aleatoire au sein de l’algorithme tabou.A chaque itération on choisira un mouvement tabou en privilégiant les meilleurs d’entre eux.
+l’idée de la recherche tabou stochastique est d’introduire de l’aleatoire au sein de l’algorithme tabou.A chaque itération on choisira un mouvement tabou en choississant l'un des meilleurs.
 
 Choix du mouvement :
 
 Les mouvements candidats sont parmi les mouvements non tabous et les
 
 mouvements tabous exceptionnels (critère d’aspiration).
-
-La probabilité de choisir un mouvement candidat m croît avec sa qualité
-
-Par exemple, la probabilité de choix d’un mouvement peut être proportionnelle
-à exp(-delta(m)/T), que le mouvement améliore ou non.
 
 Voyons comment cela se traduit concrètement, en pratique, sur notre problème.
 
