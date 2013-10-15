@@ -246,70 +246,49 @@ Nous avons choisi d’implémenter la méthode de la recherche tabou qui semblai
 adaptée pour résoudre ce problème.
 
 \section{La recherche Tabou}
-Nous n’allons pas détailler les différentes techniques rattachées à  cette méthode, car ce n’est pas le
-propos de ce rapport. Nous allons, toutefois, récapituler très brièvement, les grands
-traits caractéristiques de la recherche tabou.
+Nous n’allons pas détailler les différentes techniques rattachées à  cette méthode, car ce n’est pas le propos de ce rapport. Nous allons, toutefois, récapituler très brièvement, les grands traits caractéristiques de la recherche tabou.\\
 
-La recherche tabou est une métaheuristique d'optimisation présentée par Fred Glover en 1986.
-L'idée de la recherche tabou consiste, à partir d'une position donnée, à regarder les positions dans le voisinage et à choisir la position dans ce voisinage qui minimise la fonction objectif.
-On peut noter que cette opération peut augmenter la valeur d'une fonction à minimiser : Si par exemple tous les points du voisinage ont une valeur plus élevée. C'est à partir de ce mécanisme que l'on sort d'un minimum local.
+La recherche tabou est une métaheuristique d'optimisation présentée par Fred Glover en 1986.\\
+L'idée de la recherche tabou consiste, à partir d'une position donnée, à regarder les positions dans le voisinage et à choisir la position dans ce voisinage qui minimise la fonction objectif.\\
+On peut noter que cette opération peut augmenter la valeur d'une fonction à minimiser : si par exemple tous les points du voisinage ont une valeur plus élevée. C'est à partir de ce mécanisme que l'on sort d'un minimum local.\\
 
-Le risque cependant est qu'à l'étape suivante, on retombe dans le minimum local auquel on vient d'échapper. C'est pourquoi il faut que l'heuristique ait de la mémoire : le mécanisme consiste à interdire de revenir sur les dernières positions explorées.C'est de là que vient le terme tabou.
+Le risque cependant est qu'à l'étape suivante, on retombe dans le minimum local auquel on vient d'échapper. C'est pourquoi il faut que l'heuristique ait de la mémoire : le mécanisme consiste à interdire de revenir sur les dernières positions explorées.C'est de là que vient le terme tabou.\\
 
-Les positions déjà explorées sont conservées dans une file FIFO appelée liste tabou que l'on ajuste au besoin de l'heuristique. Cette file doit conserver des beaucoup de positions, ce qui peut  nécessiter la mise en mémoire d'une grande quantité d'informations. Cette difficulté peut être contournée gardant en mémoire que les mouvements précédents, associés à la valeur de la fonction à minimiser.
+Les positions déjà explorées sont conservées dans une file FIFO appelée liste tabou que l'on ajuste au besoin de l'heuristique. Cette file doit conserver des beaucoup de positions, ce qui peut  nécessiter la mise en mémoire d'une grande quantité d'informations. Cette difficulté peut être contournée gardant en mémoire que les mouvements précédents, associés à la valeur de la fonction à minimiser.\\
 
-La méthode utilise une ou plusieurs mémoires  qui sont mises à jour
-et exploitées au cours de la recherche.
-Algorithme tabou de base : mémoire à court terme (liste taboue) avec un critère d'aspiration
-Algorithme tabou évolué : mémoire à court terme (liste tabou) et une mémoire à
-long terme pour assurer l’intensification et/ou la diversification
+La méthode utilise une ou plusieurs mémoires  qui sont mises à jour et exploitées au cours de la recherche.\\
+Algorithme tabou de base : mémoire à court terme (liste taboue) avec un critère d'aspiration\\
+Algorithme tabou évolué : mémoire à court terme (liste tabou) et une mémoire à long terme pour assurer l’intensification et/ou la diversification\\
 
-Pour l’algorithme tabou de base on introduit un critère d aspiration
-pour éviter d’éliminer des mouvements (car tabou) alors qu’ils sont utiles
+Pour l’algorithme tabou de base on introduit un critère d'aspiration pour éviter d’éliminer des mouvements (car tabou) alors qu’ils sont utiles. C’est donc un critère qui permet d’accepter un mouvement précédemment tabou. Un critère d’aspiration peut être, par exemple, d’accepter une configuration si elle est meilleur que celle actuel.\\
 
-c’est donc un critère qui permet d’accepter un mouvement précédemment tabou
-un critère d’aspiration peut être par exemple d’accepter une configuration si elle est meilleur que celle actuel.
+L’algorithme tabou évolué a en plus une mémoire à long terme. On implémente avec l’algorithme tabou avancé une méthode d’intensification (facultative) et une méthode de diversification.\\
 
-L’algorithme tabou évolué a en plus une mémoire à long terme. On implémente avec l’algorithme tabou avancé une méthode d’intensification (facultative) et une méthode de diversification.
-
-Dans la mémoire à long terme tout d’abord on mémorise en plus de tout les mouvements
-
-Les solutions d’élite, qui sont les meilleurs configuration de placement trouvé, une recency memory qui mémorise le nombre d'itération consécutive pour laquelle l’attribut a été présent
-
-sans interruption et une frequency memory qui pour chaque attribut note soit le nombre de mouvement dans lequel a été appliqué l’attribut soit le nombre total d’itération ou l’attribut a fait parti de la solution\\
+Dans la mémoire à long terme tout d’abord on mémorise en plus de tout les mouvements, les solutions d’élite, qui sont les meilleurs configuration de placement trouvé, une recency memory qui mémorise le nombre d'itération consécutive pour laquelle l’attribut a été présent sans interruption et une frequency memory qui pour chaque attribut note soit le nombre de mouvement dans lequel a été appliqué l’attribut soit le nombre total d’itération ou l’attribut a fait parti de la solution\\
 
 L’idée de l’intensification est de creuser ( ou intensifier ) des régions qui semble intéressante
-et ce de façon périodique).
+et ce de façon périodique).\\
+\\
+Des techniques d’intensification :\\
+-Fixer certains attributs qui ont été souvent présents dans les configurations visitées\\
+ou dans les configurations d’élite visitées\\
+-Repartir de bonnes solutions\\
+-Reconstruire une solution de départ qui tente de combiner des attributs qui ont été présent souvent dans les configurations visitées\\
 
-Des techniques d’intensification :
-
--Fixer certains attributs qui ont été souvent présents dans les configurations visitées
-ou dans les configurations d’élite visitées.\\
--Repartir de bonnes solutions.\\
--Reconstruire une solution de départ qui tente de combiner des attributs qui ont été
-présent souvent dans les configurations visitées.\\
-
-L’idée de la diversification est de diriger (de manière périodique) l’algorithme sur des pistes qui n’ont pas encore été visitées.
-
-De nombreuses techniques sont :
-
+L’idée de la diversification est de diriger (de manière périodique) l’algorithme sur des pistes qui n’ont pas encore été visitées.\\
+\\
+De nombreuses techniques sont :\\
 -Repartir d’une configuration aléatoire\\
 -Modifier la fonction de coût pour favoriser les attributs peu fréquents et/ou pénaliser les attributs fréquents\\
 -Reconstruire une solution de départ qui tente de combiner des attributs qui ont été présents le moins souvent dans les configurations visitées\\
 
 L’intensification et la diversification ont des buts opposés. L’intensification est facultative
-car on peux considérer que les régions explorés l’ont été suffisamment. La diversification quand à elle est importante car le problème de confinement à des régions est fréquent.
-
-
-Méthode de recherche tabou stochastique
-
-l’idée de la recherche tabou stochastique est d’introduire de l’aleatoire au sein de l’algorithme tabou.A chaque itération on choisira un mouvement tabou en choississant l'un des meilleurs.
-
-Choix du mouvement :
-
-Les mouvements candidats sont parmi les mouvements non tabous et les
-
-mouvements tabous exceptionnels (critère d’aspiration).
+car on peux considérer que les régions explorés l’ont été suffisamment. La diversification quand à elle est importante car le problème de confinement à des régions est fréquent.\\
+\\
+Méthode de recherche tabou stochastique:\\
+L’idée de la recherche tabou stochastique est d’introduire de l’aléatoire au sein de l’algorithme tabou.A chaque itération on choisira un mouvement tabou en choisissant l'un des meilleurs.\\
+Choix du mouvement :\\
+Les mouvements candidats sont parmi les mouvements non tabous et les mouvements tabous exceptionnels (critère d’aspiration).\\
 
 Voyons comment cela se traduit concrètement, en pratique, sur notre problème.
 
@@ -363,21 +342,21 @@ Voyons comment cela se traduit concrètement, en pratique, sur notre problème.
 Nous avons choisi d'implémenter l'algorithme en C++, notamment dans un souci de performance d’exécution. On cherche en effet à obtenir la meilleure solution possible dans un délai de temps le plus court possible. 
 
 \subsection{Implémentation}
- Nous allons brièvement aborder ici quelques points de l’algorithme qui peuvent poser problèmes.
+Nous allons brièvement aborder ici quelques points de l’algorithme qui peuvent poser problèmes.
 
 Il nous a fallu développer une fonction pour calculer le coût d'une solution, puisque l'on cherche à minimiser ce coût qui représente la fonction objectif, et une fonction qui échange 2 pièces, puisque c'est cette transformation qui a été choisit.
 
 Une fois que l'on a ces deux fonctions, on tire une configuration initiale aléatoirement et on applique l'algorithme.
 
-La méthode de recherche tabou de base ne suffisant pas il a fallu adopter une recherche tabou evolué : c'est à dire doté d'une mémoire à long terme.On a doté la mémoire à long terme d'une technique de diversification et d 'une d'intensification.
+La méthode de recherche tabou de base ne suffisant pas il a fallu adopter une recherche tabou évolué : c'est à dire doté d'une mémoire à long terme.On a doté la mémoire à long terme d'une technique de diversification et d 'une d'intensification.
 
-On a choisi de memoriser les meilleurs solutions rencontrées au cours de la recherche (dite solutions d'élite) et on a choisi d'implementer la technique d'intensification suivante.
-Lorsqu'il y a stagnation ou à partir d'un certain nombre de cycle on repart d'une solution d'élite
-et on fixe les composants qui semblent intéressant c'est à dire faisant parti de plusieurs solutions d'élite.
-Pour la méthode de diversification on a adopté pour une méthode  de diversification par relance :
-on interrompt periodiquement la recherche et on construit une solution avec des attributs peu utilisés. 
+On a choisi de mémoriser les meilleurs solutions rencontrées au cours de la recherche (dite solutions d'élite) et on a choisi d'implémenter la technique d'intensification suivante.
 
- nous utilisons une des fonctions fournit par la STL qui en l’occurrence permet de générer des nombres aléatoires de manière uniforme.
+Lorsqu'il y a stagnation ou à partir d'un certain nombre de cycle on repart d'une solution d'élite et on fixe les composants qui semblent intéressant c'est à dire faisant parti de plusieurs solutions d'élite.
+
+Pour la méthode de diversification on a adopté pour une méthode  de diversification par relance : on interrompt périodiquement la recherche et on construit une solution avec des attributs peu utilisés. 
+
+Nous utilisons une des fonctions fournit par la STL qui en l’occurrence permet de générer des nombres aléatoires de manière uniforme.
 
 \subsection{Résultats}
 Les résultats obtenus sont satisfaisants. L'algorithme trouve dans la plupart des cas la meilleur solution. Mais Il a tendance a beaucoup changer de position avant de trouver la solution.
