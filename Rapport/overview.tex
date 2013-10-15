@@ -248,17 +248,19 @@ adaptée pour résoudre ce problème.
 \section{La recherche Tabou}
 Nous n’allons pas détailler les différentes techniques rattachées à  cette méthode, car ce n’est pas le propos de ce rapport. Nous allons, toutefois, récapituler très brièvement, les grands traits caractéristiques de la recherche tabou.\\
 
-La recherche tabou est une métaheuristique d'optimisation présentée par Fred Glover en 1986.\\
-L'idée de la recherche tabou consiste, à partir d'une position donnée, à regarder les positions dans le voisinage et à choisir la position dans ce voisinage qui minimise la fonction objectif.\\
+La recherche tabou est une métaheuristique d'optimisation présentée par Fred Glover en 1986.
+
+L'idée de la recherche tabou consiste, à partir d'une position donnée, à regarder les positions dans le voisinage et à choisir la position dans ce voisinage qui minimise la fonction objectif.
+
 On peut noter que cette opération peut augmenter la valeur d'une fonction à minimiser : si par exemple tous les points du voisinage ont une valeur plus élevée. C'est à partir de ce mécanisme que l'on sort d'un minimum local.\\
 
 Le risque cependant est qu'à l'étape suivante, on retombe dans le minimum local auquel on vient d'échapper. C'est pourquoi il faut que l'heuristique ait de la mémoire : le mécanisme consiste à interdire de revenir sur les dernières positions explorées.C'est de là que vient le terme tabou.\\
 
 Les positions déjà explorées sont conservées dans une file FIFO appelée liste tabou que l'on ajuste au besoin de l'heuristique. Cette file doit conserver des beaucoup de positions, ce qui peut  nécessiter la mise en mémoire d'une grande quantité d'informations. Cette difficulté peut être contournée gardant en mémoire que les mouvements précédents, associés à la valeur de la fonction à minimiser.\\
 
-La méthode utilise une ou plusieurs mémoires  qui sont mises à jour et exploitées au cours de la recherche.\\
-Algorithme tabou de base : mémoire à court terme (liste taboue) avec un critère d'aspiration\\
-Algorithme tabou évolué : mémoire à court terme (liste tabou) et une mémoire à long terme pour assurer l’intensification et/ou la diversification\\
+La méthode utilise une ou plusieurs mémoires  qui sont mises à jour et exploitées au cours de la recherche :\\
+-Algorithme tabou de base : mémoire à court terme (liste taboue) avec un critère d'aspiration\\
+-Algorithme tabou évolué : mémoire à court terme (liste tabou) et une mémoire à long terme pour assurer l’intensification et/ou la diversification\\
 
 Pour l’algorithme tabou de base on introduit un critère d'aspiration pour éviter d’éliminer des mouvements (car tabou) alors qu’ils sont utiles. C’est donc un critère qui permet d’accepter un mouvement précédemment tabou. Un critère d’aspiration peut être, par exemple, d’accepter une configuration si elle est meilleur que celle actuel.\\
 
@@ -268,7 +270,6 @@ Dans la mémoire à long terme tout d’abord on mémorise en plus de tout les m
 
 L’idée de l’intensification est de creuser ( ou intensifier ) des régions qui semble intéressante
 et ce de façon périodique).\\
-\\
 Des techniques d’intensification :\\
 -Fixer certains attributs qui ont été souvent présents dans les configurations visitées\\
 ou dans les configurations d’élite visitées\\
@@ -276,7 +277,6 @@ ou dans les configurations d’élite visitées\\
 -Reconstruire une solution de départ qui tente de combiner des attributs qui ont été présent souvent dans les configurations visitées\\
 
 L’idée de la diversification est de diriger (de manière périodique) l’algorithme sur des pistes qui n’ont pas encore été visitées.\\
-\\
 De nombreuses techniques sont :\\
 -Repartir d’une configuration aléatoire\\
 -Modifier la fonction de coût pour favoriser les attributs peu fréquents et/ou pénaliser les attributs fréquents\\
